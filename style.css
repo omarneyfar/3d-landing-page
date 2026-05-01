@@ -116,6 +116,8 @@ em { font-family: var(--font-italic); font-style: italic; }
     0 0 120px rgba(139,61,255,0.3),
     inset 0 0 30px rgba(255,255,255,0.1);
   will-change: transform, opacity;
+  pointer-events: auto;
+  cursor: none;
 }
 
 .intro-play-icon {
@@ -1005,16 +1007,24 @@ em { font-family: var(--font-italic); font-style: italic; }
 html, body { cursor: none; }
 a, button, .service-card, .work-item, .stat-item { cursor: none; }
 
-.cursor-dot {
+.cursor-star {
   position: fixed;
   top: 0; left: 0;
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--white);
+  width: 22px; height: 22px;
   pointer-events: none;
   z-index: 9999;
   transform: translate(-50%, -50%);
-  mix-blend-mode: difference;
+  filter: drop-shadow(0 0 12px rgba(255,255,255,0.85));
+}
+
+.cursor-star::before {
+  content: '✦';
+  font-size: 20px;
+  line-height: 1;
+  background: var(--grad-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .cursor-ring {
@@ -1130,7 +1140,8 @@ body {
 
 /* ── MOBILE CURSOR HIDE ──────────────────────────────────── */
 @media (max-width: 900px) {
-  html, body, a, button, .service-card, .work-item, .stat-item { cursor: auto; }
-  .cursor-dot, .cursor-ring, .cursor-glow { display: none; }
+  .cursor-star { width: 18px; height: 18px; }
+  .cursor-star::before { font-size: 16px; }
+  .cursor-ring { width: 30px; height: 30px; }
+  .cursor-glow { width: 240px; height: 240px; }
 }
-
