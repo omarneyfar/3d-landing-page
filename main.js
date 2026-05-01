@@ -55,6 +55,10 @@ document.addEventListener('mousemove', (e) => {
   gsap.to(cursorGlow, { x: e.clientX, y: e.clientY, duration: 0.9, ease: 'power2.out' });
 });
 
+gsap.set(cursorStar, { x: window.innerWidth * 0.5, y: window.innerHeight * 0.5 });
+gsap.set(cursorRing, { x: window.innerWidth * 0.5, y: window.innerHeight * 0.5 });
+gsap.set(cursorGlow, { x: window.innerWidth * 0.5, y: window.innerHeight * 0.5 });
+
 document.querySelectorAll('a, button, .service-card, .work-item, .stat-item, .intro-play').forEach(el => {
   el.addEventListener('mouseenter', () => {
     gsap.to(cursorRing, { scale: 2.5, borderColor: 'rgba(255,27,107,0.6)', duration: 0.3 });
@@ -81,6 +85,7 @@ const introTL = gsap.timeline({
 
 const introPlay = document.getElementById('intro-play');
 let introCompleted = false;
+gsap.set('.intro-play', { xPercent: -50, yPercent: -50, transformOrigin: '50% 50%' });
 
 const goToHero = () => {
   if (introCompleted) return;
