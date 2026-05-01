@@ -73,19 +73,32 @@ const introTL = gsap.timeline({
   scrollTrigger: {
     trigger: '#intro',
     start: 'top top',
-    end: 'bottom top',
+    end: '+=140%',
     scrub: 1.2,
-    pin: false,
+    pin: true,
   }
 });
 
 const introPlay = document.getElementById('intro-play');
+let introCompleted = false;
+
+const goToHero = () => {
+  if (introCompleted) return;
+  introCompleted = true;
+  const heroSection = document.getElementById('hero');
+  if (heroSection) {
+    lenis.scrollTo(heroSection, { offset: 0, duration: 1.8, easing: (t) => 1 - Math.pow(1 - t, 3) });
+  }
+};
+
 if (introPlay) {
   introPlay.addEventListener('click', () => {
-    const heroSection = document.getElementById('hero');
-    if (heroSection) {
-      lenis.scrollTo(heroSection, { offset: 0, duration: 1.8, easing: (t) => 1 - Math.pow(1 - t, 3) });
-    }
+    if (introCompleted) return;
+    gsap.to('.intro-play', { scale: 45, duration: 1.2, ease: 'power3.in' });
+    gsap.to(['.intro-ring--inner', '.intro-ring--mid', '.intro-ring--outer'], {
+      scale: 35, opacity: 0, duration: 1.2, ease: 'power3.in',
+    });
+    gsap.delayedCall(0.95, goToHero);
   });
 }
 
@@ -100,7 +113,8 @@ introTL
   .to('.intro-brand', { opacity: 0, y: -60, scale: 1.5, duration: 0.5 }, 0)
   .to('.intro-label', { opacity: 0, y: -30, duration: 0.3 }, 0)
   .to('.intro-lines span', { opacity: 0, scaleY: 2, stagger: 0.05, duration: 0.5 }, 0)
-  .to('#intro-canvas', { opacity: 0, duration: 0.6 }, 0.3);
+  .to('#intro-canvas', { opacity: 0, duration: 0.6 }, 0.3)
+  .add(() => goToHero(), 0.92);
 
 // Intro pulse animation on the play button
 gsap.to('.intro-play', {
