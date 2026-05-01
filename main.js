@@ -39,30 +39,34 @@ let scrollVelocity = 0;
 lenis.on('scroll', (e) => { scrollVelocity = e.velocity; });
 
 // ══════════════════════════════════════════════════════════
-//  5. CUSTOM CURSOR (dot + ring + glow)
+//  5. CUSTOM CURSOR (star + ring + glow)
 // ══════════════════════════════════════════════════════════
-const cursorDot  = document.createElement('div');
+const cursorStar = document.createElement('div');
 const cursorRing = document.createElement('div');
 const cursorGlow = document.createElement('div');
-cursorDot.className  = 'cursor-dot';
+cursorStar.className = 'cursor-star';
 cursorRing.className = 'cursor-ring';
 cursorGlow.className = 'cursor-glow';
-document.body.append(cursorDot, cursorRing, cursorGlow);
+document.body.append(cursorStar, cursorRing, cursorGlow);
 
 document.addEventListener('mousemove', (e) => {
-  gsap.set(cursorDot, { x: e.clientX, y: e.clientY });
+  gsap.set(cursorStar, { x: e.clientX, y: e.clientY });
   gsap.to(cursorRing, { x: e.clientX, y: e.clientY, duration: 0.3, ease: 'power2.out' });
   gsap.to(cursorGlow, { x: e.clientX, y: e.clientY, duration: 0.9, ease: 'power2.out' });
 });
 
+gsap.set(cursorStar, { x: window.innerWidth * 0.5, y: window.innerHeight * 0.5 });
+gsap.set(cursorRing, { x: window.innerWidth * 0.5, y: window.innerHeight * 0.5 });
+gsap.set(cursorGlow, { x: window.innerWidth * 0.5, y: window.innerHeight * 0.5 });
+
 document.querySelectorAll('a, button, .service-card, .work-item, .stat-item, .intro-play').forEach(el => {
   el.addEventListener('mouseenter', () => {
     gsap.to(cursorRing, { scale: 2.5, borderColor: 'rgba(255,27,107,0.6)', duration: 0.3 });
-    gsap.to(cursorDot,  { scale: 0, duration: 0.2 });
+    gsap.to(cursorStar, { scale: 1.5, rotation: 20, duration: 0.2 });
   });
   el.addEventListener('mouseleave', () => {
     gsap.to(cursorRing, { scale: 1, borderColor: 'rgba(139,61,255,0.5)', duration: 0.3 });
-    gsap.to(cursorDot,  { scale: 1, duration: 0.2 });
+    gsap.to(cursorStar, { scale: 1, rotation: 0, duration: 0.2 });
   });
 });
 
@@ -73,11 +77,35 @@ const introTL = gsap.timeline({
   scrollTrigger: {
     trigger: '#intro',
     start: 'top top',
-    end: 'bottom top',
+    end: '+=140%',
     scrub: 1.2,
-    pin: false,
+    pin: true,
   }
 });
+
+const introPlay = document.getElementById('intro-play');
+let introCompleted = false;
+gsap.set('.intro-play', { transformOrigin: '50% 50%' });
+
+const goToHero = () => {
+  if (introCompleted) return;
+  introCompleted = true;
+  const heroSection = document.getElementById('hero');
+  if (heroSection) {
+    lenis.scrollTo(heroSection, { offset: 0, duration: 1.8, easing: (t) => 1 - Math.pow(1 - t, 3) });
+  }
+};
+
+if (introPlay) {
+  introPlay.addEventListener('click', () => {
+    if (introCompleted) return;
+    gsap.to('.intro-play', { scale: 45, duration: 1.2, ease: 'power3.in' });
+    gsap.to(['.intro-ring--inner', '.intro-ring--mid', '.intro-ring--outer'], {
+      scale: 35, opacity: 0, duration: 1.2, ease: 'power3.in',
+    });
+    gsap.delayedCall(0.95, goToHero);
+  });
+}
 
 // Play button scales up massively, rings expand, everything fades
 introTL
@@ -90,7 +118,8 @@ introTL
   .to('.intro-brand', { opacity: 0, y: -60, scale: 1.5, duration: 0.5 }, 0)
   .to('.intro-label', { opacity: 0, y: -30, duration: 0.3 }, 0)
   .to('.intro-lines span', { opacity: 0, scaleY: 2, stagger: 0.05, duration: 0.5 }, 0)
-  .to('#intro-canvas', { opacity: 0, duration: 0.6 }, 0.3);
+  .to('#intro-canvas', { opacity: 0, duration: 0.6 }, 0.3)
+  .add(() => goToHero(), 0.92);
 
 // Intro pulse animation on the play button
 gsap.to('.intro-play', {
@@ -98,6 +127,26 @@ gsap.to('.intro-play', {
 });
 gsap.to('.intro-ring--mid', {
   scale: 1.05, duration: 2, ease: 'sine.inOut', yoyo: true, repeat: -1,
+});
+
+document.querySelectorAll('.hero-content, .section-header, .about-text, .contact-inner').forEach((el) => {
+  el.addEventListener('mousemove', (e) => {
+    const rect = el.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    gsap.to(el, {
+      x: x * 12,
+      y: y * 8,
+      rotateY: x * 4,
+      rotateX: -y * 3,
+      duration: 0.5,
+      ease: 'power2.out',
+      transformPerspective: 1000,
+    });
+  });
+  el.addEventListener('mouseleave', () => {
+    gsap.to(el, { x: 0, y: 0, rotateX: 0, rotateY: 0, duration: 0.7, ease: 'power3.out' });
+  });
 });
 
 // ══════════════════════════════════════════════════════════
