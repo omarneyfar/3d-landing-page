@@ -93,20 +93,16 @@ em { font-family: var(--font-italic); font-style: italic; }
 }
 
 .intro-center {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
+  position: fixed;
+  inset: 0;
   z-index: 20;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   pointer-events: none;
 }
 
 .intro-play {
-  position: fixed;
-  top: 50%;
-  left: 50%;
+  position: relative;
   width: 110px; height: 110px;
   border-radius: 50%;
   background: var(--grad);

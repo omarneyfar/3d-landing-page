@@ -85,7 +85,7 @@ const introTL = gsap.timeline({
 
 const introPlay = document.getElementById('intro-play');
 let introCompleted = false;
-gsap.set('.intro-play', { xPercent: -50, yPercent: -50, transformOrigin: '50% 50%' });
+gsap.set('.intro-play', { transformOrigin: '50% 50%' });
 
 const goToHero = () => {
   if (introCompleted) return;
